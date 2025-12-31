@@ -1,0 +1,45 @@
+name: Trigger auto deployment for capps-backend-odbhci2yynpgc
+
+# When this action will be executed
+on:
+  # Automatically trigger it when detected changes in repo
+  push:
+    branches: 
+      [ main ]
+    paths:
+    - '**'
+    - '.github/workflows/capps-backend-odbhci2yynpgc-AutoDeployTrigger-2c49e0ec-391d-4422-98fe-dc139f627227.yml'
+
+  # Allow manual trigger 
+  workflow_dispatch:
+      
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout to the branch
+        uses: actions/checkout@v2
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.CAPPSBACKENDODBHCI2YYNPGC_AZURE_CREDENTIALS }}
+
+      - name: Build and push container image to registry
+        uses: azure/container-apps-deploy-action@v2
+        with:
+          appSourcePath: ${{ github.workspace }}
+          _dockerfilePathKey_: _dockerfilePath_
+          _targetLabelKey_: _targetLabel_
+          registryUrl: vscodedev875484gnwdg7vh2jkfaregistry.azurecr.io
+          registryUsername: ${{ secrets.CAPPSBACKENDODBHCI2YYNPGC_REGISTRY_USERNAME }}
+          registryPassword: ${{ secrets.CAPPSBACKENDODBHCI2YYNPGC_REGISTRY_PASSWORD }}
+          containerAppName: capps-backend-odbhci2yynpgc
+          resourceGroup: rg-openaisearch
+          imageToBuild: vscodedev875484gnwdg7vh2jkfaregistry.azurecr.io/capps-backend-odbhci2yynpgc:${{ github.sha }}
+          
+            
+
+     
+
